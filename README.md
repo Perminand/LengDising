@@ -1,54 +1,54 @@
 # Landscape Design
 
-**Landscape Design** — многопользовательское веб‑приложение для ландшафтного дизайна: проекты со сценой (3D/состояние сцены), каталог элементов, личная библиотека и система подписок с лимитами. Backend на Spring Boot с JWT‑аутентификацией, Postgres и миграциями Liquibase.
+**Landscape Design** is a multi-user landscape design web app: projects with a scene (3D / scene state), an items catalog, a personal library, and subscription tiers with limits. The backend is built with Spring Boot and uses JWT authentication, Postgres, and Liquibase migrations.
 
-## Возможности
+## Features
 
-- **Авторизация**: регистрация/логин, **JWT**.
-- **Проекты**: список/получение/создание/удаление проекта, обновление **scene state**.
-- **Каталог**: просмотр доступных деталей/элементов.
-- **Личная библиотека**: CRUD, импорт (копия) из публичной библиотеки.
-- **Подписки**: тарифы и лимиты (кол-во проектов, кол-во элементов сцены), (в демо) смена тарифа через API.
+- **Authentication**: register / login, **JWT**.
+- **Projects**: list / get / create / delete projects, update **scene state**.
+- **Catalog**: browse available details/items.
+- **Personal library**: CRUD, import (copy) from a public/browseable library.
+- **Subscriptions**: tiers and limits (max projects, max scene elements), (demo) change tier via API.
 
-## Технологии
+## Tech stack
 
 - **Java 17**, **Spring Boot 3.2**
 - **Spring Web / Security / Validation**, **Spring Data JPA**
 - **PostgreSQL**
-- **Liquibase** (changelog’и в `src/main/resources/db/changelog`)
-- **JJWT** (JWT токены)
-- Статика: `src/main/resources/static/`
+- **Liquibase** (changelogs in `src/main/resources/db/changelog`)
+- **JJWT** (JWT tokens)
+- Static assets: `src/main/resources/static/`
 
-## Быстрый старт
+## Quick start
 
-### 1) Поднять базу данных
+### 1) Start the database
 
 ```bash
 docker compose up -d
 ```
 
-По умолчанию поднимается PostgreSQL:
+PostgreSQL defaults:
 
 - **DB**: `landscape_design`
 - **User/Password**: `landscape` / `landscape`
 - **Port**: `5432`
 
-### 2) Запустить приложение
+### 2) Run the application
 
 ```bash
 mvn spring-boot:run
 ```
 
-- **Backend** по умолчанию: `http://localhost:8080`
+- **Backend** default URL: `http://localhost:8080`
 
-## Конфигурация
+## Configuration
 
-Основные настройки находятся в `src/main/resources/application.yml`.
+Main configuration lives in `src/main/resources/application.yml`.
 
-- **БД**: `spring.datasource.url = jdbc:postgresql://localhost:5432/landscape_design`
-- **JWT secret**: можно переопределить переменной окружения **`APP_JWT_SECRET`**
+- **Database**: `spring.datasource.url = jdbc:postgresql://localhost:5432/landscape_design`
+- **JWT secret**: override via environment variable **`APP_JWT_SECRET`**
 
-## Основные API
+## Main API endpoints
 
 ### Auth
 
@@ -58,7 +58,7 @@ mvn spring-boot:run
 ### Me / Subscription (demo)
 
 - `GET /api/me`
-- `POST /api/me/subscription` (включается флагом `app.demo.allow-tier-change: true`)
+- `POST /api/me/subscription` (enabled via `app.demo.allow-tier-change: true`)
 
 ### Projects
 
