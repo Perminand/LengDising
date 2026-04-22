@@ -1,0 +1,39 @@
+databaseChangeLog:
+  - changeSet:
+      id: 006-user-catalog-items
+      author: landscape-app
+      changes:
+        - createTable:
+            tableName: user_catalog_items
+            columns:
+              - column: { name: id, type: bigint, autoIncrement: true, constraints: { primaryKey: true, nullable: false } }
+              - column: { name: owner_id, type: uuid, constraints: { nullable: false, foreignKeyName: fk_uci_owner, referencedTableName: users, referencedColumnNames: id } }
+              - column: { name: name, type: varchar(200), constraints: { nullable: false } }
+              - column: { name: category, type: varchar(80), constraints: { nullable: false } }
+              - column: { name: description, type: varchar(1000) }
+              - column: { name: shape_type, type: varchar(40), constraints: { nullable: false } }
+              - column: { name: color_hex, type: varchar(7) }
+              - column: { name: default_scale_x, type: double, constraints: { nullable: false }, defaultValueNumeric: 1.0 }
+              - column: { name: default_scale_y, type: double, constraints: { nullable: false }, defaultValueNumeric: 1.0 }
+              - column: { name: default_scale_z, type: double, constraints: { nullable: false }, defaultValueNumeric: 1.0 }
+              - column: { name: sort_order, type: int, constraints: { nullable: false }, defaultValueNumeric: 0 }
+              - column: { name: source_item_id, type: bigint }
+              - column: { name: public_for_import, type: boolean, constraints: { nullable: false }, defaultValueBoolean: false }
+              - column: { name: created_at, type: timestamptz, constraints: { nullable: false }, defaultValueComputed: CURRENT_TIMESTAMP }
+        - addForeignKeyConstraint:
+            constraintName: fk_uci_source
+            baseTableName: user_catalog_items
+            baseColumnNames: source_item_id
+            referencedTableName: user_catalog_items
+            referencedColumnNames: id
+            onDelete: SET NULL
+        - createIndex:
+            indexName: idx_uci_owner
+            tableName: user_catalog_items
+            columns:
+              - column: { name: owner_id }
+        - createIndex:
+            indexName: idx_uci_public
+            tableName: user_catalog_items
+            columns:
+              - column: { name: public_for_import }

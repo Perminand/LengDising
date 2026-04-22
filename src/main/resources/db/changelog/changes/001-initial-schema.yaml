@@ -1,0 +1,165 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-users
+      author: landscape-app
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column: { name: id, type: uuid, constraints: { primaryKey: true, nullable: false } }
+              - column: { name: email, type: varchar(255), constraints: { nullable: false, unique: true } }
+              - column: { name: password_hash, type: varchar(255), constraints: { nullable: false } }
+              - column: { name: display_name, type: varchar(120) }
+              - column: { name: created_at, type: timestamptz, constraints: { nullable: false }, defaultValueComputed: CURRENT_TIMESTAMP }
+
+  - changeSet:
+      id: 002-subscriptions
+      author: landscape-app
+      changes:
+        - createTable:
+            tableName: subscriptions
+            columns:
+              - column: { name: id, type: uuid, constraints: { primaryKey: true, nullable: false } }
+              - column: { name: user_id, type: uuid, constraints: { nullable: false, foreignKeyName: fk_sub_user, referencedTableName: users, referencedColumnNames: id } }
+              - column: { name: tier, type: varchar(32), constraints: { nullable: false } }
+              - column: { name: status, type: varchar(32), constraints: { nullable: false } }
+              - column: { name: current_period_end, type: timestamptz }
+              - column: { name: created_at, type: timestamptz, constraints: { nullable: false }, defaultValueComputed: CURRENT_TIMESTAMP }
+        - createIndex:
+            indexName: idx_subscriptions_user
+            tableName: subscriptions
+            columns:
+              - column: { name: user_id }
+
+  - changeSet:
+      id: 003-landscape-projects
+      author: landscape-app
+      changes:
+        - createTable:
+            tableName: landscape_projects
+            columns:
+              - column: { name: id, type: uuid, constraints: { primaryKey: true, nullable: false } }
+              - column: { name: user_id, type: uuid, constraints: { nullable: false, foreignKeyName: fk_proj_user, referencedTableName: users, referencedColumnNames: id } }
+              - column: { name: name, type: varchar(200), constraints: { nullable: false } }
+              - column: { name: description, type: varchar(2000) }
+              - column: { name: scene_state, type: text }
+              - column: { name: created_at, type: timestamptz, constraints: { nullable: false }, defaultValueComputed: CURRENT_TIMESTAMP }
+              - column: { name: updated_at, type: timestamptz, constraints: { nullable: false }, defaultValueComputed: CURRENT_TIMESTAMP }
+        - createIndex:
+            indexName: idx_projects_user
+            tableName: landscape_projects
+            columns:
+              - column: { name: user_id }
+
+  - changeSet:
+      id: 004-catalog-details
+      author: landscape-app
+      changes:
+        - createTable:
+            tableName: catalog_details
+            columns:
+              - column: { name: id, type: bigint, autoIncrement: true, constraints: { primaryKey: true, nullable: false } }
+              - column: { name: name, type: varchar(200), constraints: { nullable: false } }
+              - column: { name: category, type: varchar(80), constraints: { nullable: false } }
+              - column: { name: description, type: varchar(1000) }
+              - column: { name: shape_type, type: varchar(40), constraints: { nullable: false } }
+              - column: { name: color_hex, type: varchar(7) }
+              - column: { name: default_scale_x, type: double, constraints: { nullable: false }, defaultValueNumeric: 1.0 }
+              - column: { name: default_scale_y, type: double, constraints: { nullable: false }, defaultValueNumeric: 1.0 }
+              - column: { name: default_scale_z, type: double, constraints: { nullable: false }, defaultValueNumeric: 1.0 }
+              - column: { name: sort_order, type: int, constraints: { nullable: false }, defaultValueNumeric: 0 }
+
+  - changeSet:
+      id: 005-seed-catalog
+      author: landscape-app
+      changes:
+        - insert:
+            tableName: catalog_details
+            columns:
+              - column: { name: name, value: "Хвойное дерево" }
+              - column: { name: category, value: "Растения" }
+              - column: { name: description, value: "Условная ель / сосна" }
+              - column: { name: shape_type, value: "cone" }
+              - column: { name: color_hex, value: "#1a5c1a" }
+              - column: { name: default_scale_x, valueNumeric: 1.2 }
+              - column: { name: default_scale_y, valueNumeric: 3.5 }
+              - column: { name: default_scale_z, valueNumeric: 1.2 }
+              - column: { name: sort_order, valueNumeric: 10 }
+        - insert:
+            tableName: catalog_details
+            columns:
+              - column: { name: name, value: "Лиственное дерево" }
+              - column: { name: category, value: "Растения" }
+              - column: { name: description, value: "Крона шаром" }
+              - column: { name: shape_type, value: "sphere" }
+              - column: { name: color_hex, value: "#2d8f2d" }
+              - column: { name: default_scale_x, valueNumeric: 2.5 }
+              - column: { name: default_scale_y, valueNumeric: 2.5 }
+              - column: { name: default_scale_z, valueNumeric: 2.5 }
+              - column: { name: sort_order, valueNumeric: 11 }
+        - insert:
+            tableName: catalog_details
+            columns:
+              - column: { name: name, value: "Кустарник" }
+              - column: { name: category, value: "Растения" }
+              - column: { name: shape_type, value: "cylinder" }
+              - column: { name: color_hex, value: "#3cb371" }
+              - column: { name: default_scale_x, valueNumeric: 0.8 }
+              - column: { name: default_scale_y, valueNumeric: 1.2 }
+              - column: { name: default_scale_z, valueNumeric: 0.8 }
+              - column: { name: sort_order, valueNumeric: 12 }
+        - insert:
+            tableName: catalog_details
+            columns:
+              - column: { name: name, value: "Газон" }
+              - column: { name: category, value: "Покрытия" }
+              - column: { name: shape_type, value: "plane" }
+              - column: { name: color_hex, value: "#4caf50" }
+              - column: { name: default_scale_x, valueNumeric: 8 }
+              - column: { name: default_scale_y, valueNumeric: 1 }
+              - column: { name: default_scale_z, valueNumeric: 6 }
+              - column: { name: sort_order, valueNumeric: 20 }
+        - insert:
+            tableName: catalog_details
+            columns:
+              - column: { name: name, value: "Дорожка (плитка)" }
+              - column: { name: category, value: "Покрытия" }
+              - column: { name: shape_type, value: "plane" }
+              - column: { name: color_hex, value: "#9e9e9e" }
+              - column: { name: default_scale_x, valueNumeric: 2 }
+              - column: { name: default_scale_y, valueNumeric: 0.05 }
+              - column: { name: default_scale_z, valueNumeric: 8 }
+              - column: { name: sort_order, valueNumeric: 21 }
+        - insert:
+            tableName: catalog_details
+            columns:
+              - column: { name: name, value: "Водоём" }
+              - column: { name: category, value: "Вода" }
+              - column: { name: shape_type, value: "box" }
+              - column: { name: color_hex, value: "#1565c0" }
+              - column: { name: default_scale_x, valueNumeric: 4 }
+              - column: { name: default_scale_y, valueNumeric: 0.3 }
+              - column: { name: default_scale_z, valueNumeric: 3 }
+              - column: { name: sort_order, valueNumeric: 30 }
+        - insert:
+            tableName: catalog_details
+            columns:
+              - column: { name: name, value: "Валун" }
+              - column: { name: category, value: "Камни" }
+              - column: { name: shape_type, value: "sphere" }
+              - column: { name: color_hex, value: "#757575" }
+              - column: { name: default_scale_x, valueNumeric: 0.6 }
+              - column: { name: default_scale_y, valueNumeric: 0.5 }
+              - column: { name: default_scale_z, valueNumeric: 0.7 }
+              - column: { name: sort_order, valueNumeric: 40 }
+        - insert:
+            tableName: catalog_details
+            columns:
+              - column: { name: name, value: "Скамейка" }
+              - column: { name: category, value: "Мебель" }
+              - column: { name: shape_type, value: "box" }
+              - column: { name: color_hex, value: "#5d4037" }
+              - column: { name: default_scale_x, valueNumeric: 2 }
+              - column: { name: default_scale_y, valueNumeric: 0.5 }
+              - column: { name: default_scale_z, valueNumeric: 0.6 }
+              - column: { name: sort_order, valueNumeric: 50 }

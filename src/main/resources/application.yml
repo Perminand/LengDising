@@ -1,0 +1,42 @@
+spring:
+  application:
+    name: landscape-design
+  datasource:
+    url: jdbc:postgresql://localhost:5432/landscape_design
+    username: landscape
+    password: landscape
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+
+server:
+  port: 8080
+
+app:
+  jwt:
+    secret: ${APP_JWT_SECRET:rQwSKD65k/TEz2w/BTXBfFp1M/o74rboqxmcipAkuh825zeQZGMeKJDKRlxS9pcdoaeFi1/dVM4o6S2c/HRQUg=="}
+    expiration-ms: 86400000
+  subscription:
+    free:
+      max-projects: 2
+      max-scene-elements: 25
+    basic:
+      max-projects: 10
+      max-scene-elements: 120
+    pro:
+      max-projects: 100
+      max-scene-elements: 2000
+  demo:
+    allow-tier-change: true
+
+logging:
+  level:
+    org.springframework.security: INFO
